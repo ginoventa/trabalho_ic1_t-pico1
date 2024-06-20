@@ -33,10 +33,10 @@ void menu()
     {
 
         printf("======================================\nHELLO, USER!\n======================================\n\n");
-        printf("1. Acessar conta\n");
-        printf("2. Cadastrar nova conta\n");
-        printf("3. Editar contas\n");
-        printf("4. Sair\n");
+        printf("1. Login\n");
+        printf("2. Register\n");
+        printf("3. Edit profiles\n");
+        printf("4. Exit\n");
         printf("\nChoose an option: ");
         scanf("%d", &option); //Recebe a opção
         clear_buffer();
