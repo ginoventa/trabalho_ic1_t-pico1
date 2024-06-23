@@ -362,6 +362,48 @@ void delete_account()
 
 
     }
+void search_user()
+{
+    clear_terminal();
+
+    char username[50];
+    char profile[100];
+    int found = 0;
+
+    FILE *file = fopen("usuarios.txt", "r");
+
+    printf("======================================\nFIND USERS\n======================================\n\n");
+    printf("Profile username: ");
+    scanf("%s", username);
+
+    while (fgets(profile, sizeof(profile), file) != NULL)
+    {
+        char *search_username = strtok(profile, " ");
+        char *search_password = strtok(NULL, "\n");
+
+        if (strcmp(username, search_username) == 0)
+        {
+            printf("\nProfile data:\n");
+            printf("Username - %s\n", search_username);
+            printf("Password - %s\n", search_password);
+            found = 1;
+            break;
+        }
+    }
+
+    fclose(file);
+
+    if (!found)
+    {
+        printf("\n%s not found.\n", username);
+    }
+
+    // Limpa tela
+    clear_buffer();
+    press_to_continue();
+    clear_terminal();
+}
+
 int edit_menu()//Função de menu para edição, inclui: edição de nome de usuário, deleção, edição de senha e listagem de todos os usuários cadastrados
 {
     do{
@@ -388,7 +430,11 @@ int edit_menu()//Função de menu para edição, inclui: edição de nome de usu
                  users_list();
                  break;
               case 5:
-                 main();
+                 search_user();
+                 break;
+                case 6:
+                main();
+                break;
               default:
                 printf("Invalid option. Try again!");
                 break;
