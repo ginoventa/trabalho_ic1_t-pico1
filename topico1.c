@@ -115,7 +115,6 @@ void login() //Função responsável pela exibição e funcionamento da aba de l
                     clear_buffer();
                     press_to_continue();
                     clear_terminal();
-                    return;
                 }
             }
 
@@ -153,11 +152,13 @@ void users_list()
         }
         user_count++;//Contagem de usuários cadastrados
     }
+    fclose(file);
     clear_buffer();
     press_to_continue();
     clear_terminal();
 }
-int edit_username()
+
+void edit_username()
 {
     clear_buffer();
     clear_terminal();
@@ -225,11 +226,10 @@ int edit_username()
     clear_buffer();
     press_to_continue();
     clear_terminal();
-    return 0;
 }
 
 
-int edit_password() {
+void edit_password() {
 
     clear_buffer();
     press_to_continue();
@@ -300,11 +300,10 @@ int edit_password() {
     clear_buffer();
     press_to_continue();
     clear_terminal();
-    return 0;
 }
 
 
-int delete_account()
+void delete_account()
     {
         clear_buffer(); //Limpeza de tela e transição
         press_to_continue();
@@ -359,50 +358,47 @@ int delete_account()
                     clear_buffer();
                     press_to_continue();
                     clear_terminal();
-                    return 0;
             }
 
 
     }
 int edit_menu()//Função de menu para edição, inclui: edição de nome de usuário, deleção, edição de senha e listagem de todos os usuários cadastrados
 {
-
-    printf("======================================\nEDIT USERS\n======================================\n\n");
-    printf("1. Change password\n");
-    printf("2. Change username\n");
-    printf("3. Delete account\n");
-    printf("4. Registered profiles\n");
-    printf("5. Home\n");
-    printf("\nChoose an option: ");
-    scanf("%d", &option);
-        switch(option)
-        {
-          case 1:
-             edit_password();
-             break;
-          case 2:
-             edit_username();
-             return edit_menu();
-             break;
-          case 3:
-             delete_account();
-             break;
-          case 4:
-             users_list();
-             return edit_menu();
-             break;
-          case 5:
-             main();
-          default:
-            printf("Invalid option. Try again!");
-            break;
-        }
+    do{
+        printf("======================================\nEDIT USERS\n======================================\n\n");
+        printf("1. Change password\n");
+        printf("2. Change username\n");
+        printf("3. Delete account\n");
+        printf("4. Registered profiles\n");
+        printf("5. Home\n");
+        printf("\nChoose an option: ");
+        scanf("%d", &option);
+            switch(option)
+            {
+              case 1:
+                 edit_password();
+                 break;
+              case 2:
+                 edit_username();
+                 break;
+              case 3:
+                 delete_account();
+                 break;
+              case 4:
+                 users_list();
+                 break;
+              case 5:
+                 main();
+              default:
+                printf("Invalid option. Try again!");
+                break;
+            }}while(option != 5);
 }
 
 int main()
     {
         clear_terminal();
-        menu();
+       do{menu();
         switch(option)
             {case 1:
                 login();
@@ -420,6 +416,6 @@ int main()
                 printf("\n->Invalid option. Try again!\n");
                 return main();
 
-            }
+            }}while(option!=4);
 
     }
