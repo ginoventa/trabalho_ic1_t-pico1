@@ -65,13 +65,16 @@ void user_registration() //Função responsável pela exibição e funcionamento
             scanf("%s", password); //Recebe o cadastramento da senha do usuário
         do{printf("-> confirm password: ");
            scanf("%s", loginPassword); //Recebe uma confirmação da senha
+        }while(strcmp(password,loginPassword) != 0);
+
             if(strcmp(password, loginPassword) == 0)
                 {
                     file = fopen("usuarios.txt", "a+");//Abre arquivo "users3.txt" e escreve usuário e senha ao final dele
-                    if (file == NULL) {
-                        printf("\n\nError opening file!\n");
-                        exit(1);
-                    }
+                    if (file == NULL)
+                        {
+                            printf("\n\nError opening file!\n");
+                            exit(1);
+                        }
                     fprintf(file, "%s %s\n", user, password);//Grava senha e nome do usuário em um arquivo '.txt'
                     printf("\nThe user was successfully registered!\n");
                     fclose(file);
@@ -82,7 +85,7 @@ void user_registration() //Função responsável pela exibição e funcionamento
         else
             printf("\nThe passwords do not match. Try again!\n\n");
 
-        }while(strcmp(password,loginPassword) != 0);
+
 
     }
 void login() //Função responsável pela exibição e funcionamento da aba de login
@@ -115,6 +118,7 @@ void login() //Função responsável pela exibição e funcionamento da aba de l
                     clear_buffer();
                     press_to_continue();
                     clear_terminal();
+                    return;
                 }
             }
 
@@ -432,9 +436,6 @@ int edit_menu()//Função de menu para edição, inclui: edição de nome de usu
               case 5:
                  search_user();
                  break;
-                case 6:
-                main();
-                break;
               default:
                 printf("Invalid option. Try again!");
                 break;
@@ -444,7 +445,7 @@ int edit_menu()//Função de menu para edição, inclui: edição de nome de usu
 int main()
     {
         clear_terminal();
-       do{menu();
+       menu();
         switch(option)
             {case 1:
                 login();
@@ -462,6 +463,5 @@ int main()
                 printf("\n->Invalid option. Try again!\n");
                 return main();
 
-            }}while(option!=4);
-
+            }
     }
