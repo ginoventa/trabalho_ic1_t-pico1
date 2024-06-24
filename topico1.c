@@ -348,11 +348,11 @@ void delete_account()
                        remove("usuarios.txt");//Apaga o arquivo original
                        rename("usuariostemp.txt", "usuarios.txt");//Renomeia o arquivo temporário, com as mudanças feitas, como o arquivo original
                        printf("\n-> User was successfuly deleted.\n");
-                       break;
+                     
                 } else {
                        remove("usuariostemp.txt");//Caso não encontrar respectivos, irá apagar o arquivo temporário criado
                        printf("\n-> Username or password incorrect.\n");
-                       break;
+                       
                  }
                     //Limpa tela
                     clear_buffer();
