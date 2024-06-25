@@ -92,10 +92,9 @@ void insertUserAtTheEndOfTheList(User **listuser, char username[50], char passwo
     }
 }
 
-
 //-----------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------
-void passFileToListUser(User **listauser, FILE *p1)
+void passFileToListUser(User **listauser, FILE *p1) //Lendo do arquivo e escrevendo na tela
 {
      char username[50];
      char password[50];
@@ -104,7 +103,7 @@ void passFileToListUser(User **listauser, FILE *p1)
 
     if (p1 != NULL)
     {
-        while (fscanf(p1, "49[^;];%49[^;]\n", username, password) == 4)
+        while (fscanf(p1,"%49[^;];%49[^;]", username, password) == 4)
         {
             insertUserAtTheEndOfTheList(listauser,username, password);
         }
@@ -117,8 +116,8 @@ void passFileToListUser(User **listauser, FILE *p1)
     }
 }
 //-----------------------------------------------------------------------------------------------------------------
-//função responsável por passar o que está na lista encadeada diretamente pro file
-void passListToFileUser(User *listauser, FILE *p1)
+
+void passListToFileUser(User *listauser, FILE *p1)//Lendo do teclado e escrevendo no arquivo
 {
     User *auxiliar1 = listauser;
     p1 = fopen("usuarios.txt", "w+");
@@ -127,7 +126,7 @@ void passListToFileUser(User *listauser, FILE *p1)
     {
         while (auxiliar1 != NULL)
         {
-            fprintf(p1, "49[^;];%49[^;]\n", auxiliar1->username, auxiliar1->password);
+            fprintf(p1,"%s;%s", auxiliar1->username, auxiliar1->password);
             auxiliar1 = auxiliar1->next1;
         }
         fclose(p1);
@@ -141,7 +140,6 @@ void passListToFileUser(User *listauser, FILE *p1)
 //-----------------------------------------------------------------------------------------------------------------
 void printUsers(User *user) //Função para printar a lista completa de usuários
 {
-    int quantidade = 1; //Indica o número de usuários listados
 
     if(user == NULL) //Verifica se a lista está vazia
     {
@@ -151,8 +149,7 @@ void printUsers(User *user) //Função para printar a lista completa de usuário
     printf("===========================================================================================\n\t\t\t\t\tREGISTERED USER\n===========================================================================================\n\n");
     while (user!=NULL)
     {
-        printf("%d. %s\n",quantidade, user->username); //Estrutura que mostra nome de usuário
-        quantidade++;
+        printf("%s\n", user->username); //Estrutura que mostra nome de usuário
         user = user->next1; //Percorre a lista
     }
 
@@ -163,7 +160,6 @@ void printUser(char username[50], char password[50]) //Função para printar os 
 {
     printf("\t-> Username: %s\n",username);
     printf("\t-> Password: %s\n", password);
-
 }
 //-----------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------
@@ -187,9 +183,10 @@ void user_registration(User **listuser) //Função responsável pela exibição 
     getchar();
 
 
-    insertUserAtTheEndOfTheList(listuser, username, password); //Adicionar o item na lista
+
     printf("\n-> The user was successfully registered!\n");
     passFileToListUser(listuser, usuarios);
+    insertUserAtTheEndOfTheList(listuser, username, password);
 
     clear_buffer();
     press_to_continue();
@@ -197,49 +194,59 @@ void user_registration(User **listuser) //Função responsável pela exibição 
 }
 //----------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------
-void login(bool *controleLogin) //Função responsável pela exibição e funcionamento da aba de login
+void login(bool *controleLogin, User **listuser) //Função responsável pela exibição e funcionamento da aba de login
 {
     clear_terminal();
 
-    //Declaração de variáveis e file
-    int controlUser = 1, controlPassword = 1;
-    char loginPassword[20], loginUser[20], user[50], password[50];
-    FILE *file;
+    if (*listuser == NULL) //Verifica se a lista está vazia
+    {
+        printf("-> Add a user first!\n");
+        return;
+    }
+
+    //Gravando as informações dos usuários
+    char username[50];
+    char password[50];
+
+    User *aux1 = *listuser;
+
     do
     {
         printf("===========================================================================================\n\t\t\t\t\tLOGIN\n===========================================================================================\n\n");
         //Obtêm senha e usuário para login
         printf("Enter your username: ");
-        scanf("%s", user);
+        scanf("%s", username);
         printf("Enter your password: ");
         scanf("%s", password);
 
         //Abre arquivo em modo leitura
-        file = fopen("usuarios.txt", "r");
+        usuarios = fopen("usuarios.txt", "r");
 
-        if (file == NULL)
+        if (usuarios == NULL)
         {
             printf("\n**Error opening file.**\n");
             exit(1);
         }
 
-        while (fscanf(file,"%s %s\n", loginUser, loginPassword) != EOF)
-        {   //Lê arquivo todo até chegar ao fim, buscando por duas strings específicas
-            controlUser = strcmp(user, loginUser);
-            controlPassword = strcmp(password, loginPassword);
-
-            if (controlUser == 0 && controlPassword == 0)
-            {   //Se encontrar, no arquivo, senha e usuário digitados executará o login
-                printf("\n-> Login successful\n");
+        while (aux1 != NULL || strcmp(aux1->username,username) != 0 && strcmp(aux1->password,password) != 0) //Procura pelo código informado pelo usuário até que chegue ao final da lista
+        {
+            if (strcmp(aux1->username,username) == 0 && strcmp(aux1->password,password) == 0) //Identifica se o item apontado pelo ponteiro apresenta o mesmo código informado pelo usuário
+            {
                 *controleLogin = true;
-                clear_buffer();
-                press_to_continue();
-                clear_terminal();
-                return;
+                printf("\n-> Successful login!\n");
+                getchar();
+                break;
+
             }
+
+            else
+            {
+                printf("\n-> Login failed (incorrect username or password). Try again!\n\n");
+                break;
+            }
+            aux1 = aux1->next1; //Se o usuário verificado não apresentar o mesmo nome informado pelo usuário, o ponteiro vai para o próximo
         }
 
-        printf("\n-> Login failed (incorrect username or password). Try again!\n\n");
         *controleLogin = false;
         clear_buffer();
         press_to_continue();
@@ -247,7 +254,7 @@ void login(bool *controleLogin) //Função responsável pela exibição e funcio
 
     } while(1);
 
-    fclose(file);
+    fclose(usuarios);
     press_to_continue();
     clear_terminal();
 }
@@ -326,7 +333,8 @@ void searchUser (User **listuser) //Função responsável pela busca de um usuá
 
     while(aux1!=NULL) //Verifica se existe um item, isto é, se e lista é diferente de null e se o code é diferente do code inserido pelo usuário
     {
-        if(aux1->username == username)
+        if(strcmp(aux1->username, username) == 0)
+
         {
             found = true;
             printf("\tProfile data: \n");
@@ -371,7 +379,7 @@ void removeUser(User **listuser) //Função responsável pela remoção de um it
     if(*listuser!=NULL)
     {
         //Remoção do primeiro nó da lista
-        if((*listuser)->username==username) //Se o código do primeiro item for igual ao inserido pelo usuário, remove-se o primeiro item
+        if(strcmp((*listuser)->username,username)==0) //Se o código do primeiro item for igual ao inserido pelo usuário, remove-se o primeiro item
         {
             found=true;
 
@@ -433,7 +441,7 @@ void removeUser(User **listuser) //Função responsável pela remoção de um it
                 }
             }
         }
-        passListToFileUser(*listuser,usuarios);
+      passListToFileUser(*listuser,usuarios);
     }
     if (!found) //Verificação se existe um item com esse código
     {
@@ -1014,7 +1022,7 @@ void mainMenu() //Função responsável pela exibição do menu principal do pro
             exit(1);
             break;
           case 1:
-            login(&controleLogin);
+            login(&controleLogin, &listuser);
             break;
           case 2:
             user_registration(&listuser);
