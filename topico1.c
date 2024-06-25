@@ -5,12 +5,12 @@
 // =================================================================================================================
 // Definições e variáveis globais
 // =================================================================================================================
-
+//Variável usada no tópico 2, 3 e 4 do trabalho
     int items;
     FILE *itens;
     FILE *usuarios;
 
-    typedef unsigned char bool; //Definição do tipo de variável booleana
+
     #define false 0
     #define true !false
 
@@ -154,7 +154,9 @@ void printUsers(User *user) //Função para printar a lista completa de usuário
     printf("===========================================================================================\n\t\t\t\t\tREGISTERED USER\n===========================================================================================\n\n");
     while (user!=NULL)
     {
-        printf("%s\n", user->username); //Estrutura que mostra nome de usuário
+        int quant = 1;
+        printf("%d. %s\n", quant, user->username); //Estrutura que mostra nome de usuário
+        quant++;
         user = user->next1; //Percorre a lista
     }
 
@@ -165,7 +167,6 @@ void printUser(char username[50], char password[50]) //Função para printar os 
 {
     printf("\t-> Username: %s\n",username);
     printf("\t-> Password: %s\n", password);
-
 }
 //-----------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------
@@ -198,7 +199,6 @@ void user_registration(User **listuser) //Função responsável pela exibição 
     clear_buffer();
     press_to_continue();
     clear_terminal();
-    fclose(p1);
 }
 //----------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------
