@@ -171,6 +171,7 @@ void printUser(char username[50], char password[50]) //Função para printar os 
 //-----------------------------------------------------------------------------------------------------------------
 void user_registration(User **listuser) //Função responsável pela exibição e funcionamento da aba de cadastramento do usuário
 {
+    clear_terminal();
     FILE* p1 = fopen("usuarios.txt", "w+");
 
     //Gravando as informações dos usuários
@@ -203,6 +204,7 @@ void user_registration(User **listuser) //Função responsável pela exibição 
 //-----------------------------------------------------------------------------------------------------------------
 void login(bool *controleLogin, User **listuser) //Função responsável pela exibição e funcionamento da aba de login
 {
+    clear_terminal();
     User *aux1;
     bool found = false;
 
