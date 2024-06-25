@@ -92,9 +92,10 @@ void insertUserAtTheEndOfTheList(User **listuser, char username[50], char passwo
     }
 }
 
+
 //-----------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------
-void passFileToListUser(User **listauser, FILE *p1) //Lendo do arquivo e escrevendo na tela
+void passFileToListUser(User **listauser, FILE *p1)
 {
      char username[50];
      char password[50];
@@ -103,7 +104,7 @@ void passFileToListUser(User **listauser, FILE *p1) //Lendo do arquivo e escreve
 
     if (p1 != NULL)
     {
-        while (fscanf(p1,"%49[^;];%49[^;]", username, password) == 4)
+        while (fscanf(p1, "49[^;];%49[^;]\n", username, password) == 4)
         {
             insertUserAtTheEndOfTheList(listauser,username, password);
         }
@@ -116,8 +117,8 @@ void passFileToListUser(User **listauser, FILE *p1) //Lendo do arquivo e escreve
     }
 }
 //-----------------------------------------------------------------------------------------------------------------
-
-void passListToFileUser(User *listauser, FILE *p1)//Lendo do teclado e escrevendo no arquivo
+//função responsável por passar o que está na lista encadeada diretamente pro file
+void passListToFileUser(User *listauser, FILE *p1)
 {
     User *auxiliar1 = listauser;
     p1 = fopen("usuarios.txt", "w+");
@@ -126,7 +127,7 @@ void passListToFileUser(User *listauser, FILE *p1)//Lendo do teclado e escrevend
     {
         while (auxiliar1 != NULL)
         {
-            fprintf(p1,"%s;%s", auxiliar1->username, auxiliar1->password);
+            fprintf(p1, "49[^;];%49[^;]\n", auxiliar1->username, auxiliar1->password);
             auxiliar1 = auxiliar1->next1;
         }
         fclose(p1);
@@ -160,11 +161,14 @@ void printUser(char username[50], char password[50]) //Função para printar os 
 {
     printf("\t-> Username: %s\n",username);
     printf("\t-> Password: %s\n", password);
+
 }
 //-----------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------
 void user_registration(User **listuser) //Função responsável pela exibição e funcionamento da aba de cadastramento do usuário
 {
+    FILE* p1 = fopen("usuarios.txt", "w+");
+
     //Gravando as informações dos usuários
     char username[50];
     char password[50];
@@ -183,70 +187,60 @@ void user_registration(User **listuser) //Função responsável pela exibição 
     getchar();
 
 
-
+    insertUserAtTheEndOfTheList(listuser, username, password); //Adicionar o item na lista
     printf("\n-> The user was successfully registered!\n");
     passFileToListUser(listuser, usuarios);
-    insertUserAtTheEndOfTheList(listuser, username, password);
 
     clear_buffer();
     press_to_continue();
     clear_terminal();
+    fclose(p1);
 }
 //----------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------
-void login(bool *controleLogin, User **listuser) //Função responsável pela exibição e funcionamento da aba de login
+void login(bool *controleLogin) //Função responsável pela exibição e funcionamento da aba de login
 {
     clear_terminal();
 
-    if (*listuser == NULL) //Verifica se a lista está vazia
-    {
-        printf("-> Add a user first!\n");
-        return;
-    }
-
-    //Gravando as informações dos usuários
-    char username[50];
-    char password[50];
-
-    User *aux1 = *listuser;
-
+    //Declaração de variáveis e file
+    int controlUser = 1, controlPassword = 1;
+    char loginPassword[20], loginUser[20], user[50], password[50];
+    FILE *file;
     do
     {
         printf("===========================================================================================\n\t\t\t\t\tLOGIN\n===========================================================================================\n\n");
         //Obtêm senha e usuário para login
         printf("Enter your username: ");
-        scanf("%s", username);
+        scanf("%s", user);
         printf("Enter your password: ");
         scanf("%s", password);
 
         //Abre arquivo em modo leitura
-        usuarios = fopen("usuarios.txt", "r");
+        file = fopen("usuarios.txt", "r");
 
-        if (usuarios == NULL)
+        if (file == NULL)
         {
             printf("\n**Error opening file.**\n");
             exit(1);
         }
 
-        while (aux1 != NULL || strcmp(aux1->username,username) != 0 && strcmp(aux1->password,password) != 0) //Procura pelo código informado pelo usuário até que chegue ao final da lista
-        {
-            if (strcmp(aux1->username,username) == 0 && strcmp(aux1->password,password) == 0) //Identifica se o item apontado pelo ponteiro apresenta o mesmo código informado pelo usuário
-            {
+        while (fscanf(file,"%s %s\n", loginUser, loginPassword) != EOF)
+        {   //Lê arquivo todo até chegar ao fim, buscando por duas strings específicas
+            controlUser = strcmp(user, loginUser);
+            controlPassword = strcmp(password, loginPassword);
+
+            if (controlUser == 0 && controlPassword == 0)
+            {   //Se encontrar, no arquivo, senha e usuário digitados executará o login
+                printf("\n-> Login successful\n");
                 *controleLogin = true;
-                printf("\n-> Successful login!\n");
-                getchar();
-                break;
-
+                clear_buffer();
+                press_to_continue();
+                clear_terminal();
+                return;
             }
-
-            else
-            {
-                printf("\n-> Login failed (incorrect username or password). Try again!\n\n");
-                break;
-            }
-            aux1 = aux1->next1; //Se o usuário verificado não apresentar o mesmo nome informado pelo usuário, o ponteiro vai para o próximo
         }
 
+        printf("\n-> Login failed (incorrect username or password). Try again!\n\n");
         *controleLogin = false;
         clear_buffer();
         press_to_continue();
@@ -254,7 +248,7 @@ void login(bool *controleLogin, User **listuser) //Função responsável pela ex
 
     } while(1);
 
-    fclose(usuarios);
+    fclose(file);
     press_to_continue();
     clear_terminal();
 }
@@ -379,7 +373,7 @@ void removeUser(User **listuser) //Função responsável pela remoção de um it
     if(*listuser!=NULL)
     {
         //Remoção do primeiro nó da lista
-        if(strcmp((*listuser)->username,username)==0) //Se o código do primeiro item for igual ao inserido pelo usuário, remove-se o primeiro item
+        if((*listuser)->username==username) //Se o código do primeiro item for igual ao inserido pelo usuário, remove-se o primeiro item
         {
             found=true;
 
@@ -441,7 +435,7 @@ void removeUser(User **listuser) //Função responsável pela remoção de um it
                 }
             }
         }
-      passListToFileUser(*listuser,usuarios);
+        passListToFileUser(*listuser,usuarios);
     }
     if (!found) //Verificação se existe um item com esse código
     {
@@ -1022,7 +1016,7 @@ void mainMenu() //Função responsável pela exibição do menu principal do pro
             exit(1);
             break;
           case 1:
-            login(&controleLogin, &listuser);
+            login(&controleLogin);
             break;
           case 2:
             user_registration(&listuser);
