@@ -60,6 +60,7 @@ typedef struct _no1//Permite que, ao armazenar os dados de uma mesma entidade, i
     {
         char username [50];
         char password [50];
+        int quant;
         struct _no1 *next1; //Cada item tem um ponteiro apontando para o item seguinte
     }User;
 
@@ -108,7 +109,7 @@ void passFileToListUser(User **listauser, FILE *p1)
 
     if (p1 != NULL)
     {
-        while (fscanf(p1, "49[^;];%49[^;]\n", username, password) == 4)
+        while (fscanf(p1, "49[^;];%49[^;]\n", username, password) == 2)
         {
             insertUserAtTheEndOfTheList(listauser,username, password);
         }
@@ -202,39 +203,29 @@ void user_registration(User **listuser) //Função responsável pela exibição 
 }
 //----------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------
-void login(bool *controleLogin) //Função responsável pela exibição e funcionamento da aba de login
+void login(bool *controleLogin, User **listuser) //Função responsável pela exibição e funcionamento da aba de login
 {
-    clear_terminal();
+    User *aux1;
+    bool found = false;
 
-    //Declaração de variáveis e file
-    int controlUser = 1, controlPassword = 1;
-    char loginPassword[20], loginUser[20], user[50], password[50];
-    FILE *file;
-    do
-    {
+    aux1 = *listuser;
+
+    char username[50];
+    char password[50];
+
+
         printf("===========================================================================================\n\t\t\t\t\tLOGIN\n===========================================================================================\n\n");
         //Obtêm senha e usuário para login
-        printf("Enter your username: ");
-        scanf("%s", user);
-        printf("Enter your password: ");
-        scanf("%s", password);
-
-        //Abre arquivo em modo leitura
-        file = fopen("usuarios.txt", "r");
-
-        if (file == NULL)
-        {
-            printf("\n**Error opening file.**\n");
-            exit(1);
-        }
-
-        while (fscanf(file,"%s %s\n", loginUser, loginPassword) != EOF)
+        printf("Username: ");
+        scanf("%s", username); //Escaneia o código do item a ser procurado de acordo com a inserção do usuário
+        printf("Password: ");
+        scanf("%s", password); //Escaneia o código do item a ser procurado de acordo com a inserção do usuário
+        printf("\n");
+        while (aux1!=NULL)
         {   //Lê arquivo todo até chegar ao fim, buscando por duas strings específicas
-            controlUser = strcmp(user, loginUser);
-            controlPassword = strcmp(password, loginPassword);
+            if(strcmp(aux1->username, username) == 0 && strcmp(aux1->password, password) == 0)
 
-            if (controlUser == 0 && controlPassword == 0)
-            {   //Se encontrar, no arquivo, senha e usuário digitados executará o login
+            {
                 printf("\n-> Login successful\n");
                 *controleLogin = true;
                 clear_buffer();
@@ -242,6 +233,7 @@ void login(bool *controleLogin) //Função responsável pela exibição e funcio
                 clear_terminal();
                 return;
             }
+            aux1 = aux1->next1; //Caminha pela lista, se esse elemento não existir em algum momento chegará em null (que é conndição de parada do while)
         }
 
         printf("\n-> Login failed (incorrect username or password). Try again!\n\n");
@@ -250,11 +242,8 @@ void login(bool *controleLogin) //Função responsável pela exibição e funcio
         press_to_continue();
         clear_terminal();
 
-    } while(1);
 
-    fclose(file);
-    press_to_continue();
-    clear_terminal();
+
 }
 //-----------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------
@@ -1021,6 +1010,7 @@ void mainMenu() //Função responsável pela exibição do menu principal do pro
             break;
           case 1:
             login(&controleLogin);
+            itemsMenu(&list);
             break;
           case 2:
             user_registration(&listuser);
@@ -1029,9 +1019,13 @@ void mainMenu() //Função responsável pela exibição do menu principal do pro
             userMenu(&listuser);
             break;
           case 4:
-            printf("\n-> You need to be logged in to access the items menu!");
-            press_to_continue();
-            break;
+            if(controleLogin == true)
+                itemsMenu(&list);
+            else
+            {
+                printf("\n-> You need to be logged in to access the items menu!");
+                press_to_continue();
+            }
           default:
             printf("\n**Invalid option. Please, try again!**\n");
             press_to_continue();
