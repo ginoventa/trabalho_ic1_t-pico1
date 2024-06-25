@@ -5,10 +5,14 @@
 // =================================================================================================================
 // Definições e variáveis globais
 // =================================================================================================================
-//Variável usada no tópico 2, 3 e 4 do trabalho
+
     int items;
     FILE *itens;
     FILE *usuarios;
+
+    typedef unsigned char bool; //Definição do tipo de variável booleana
+    #define false 0
+    #define true !false
 
     void clear_terminal() //Função que realiza a limpeza do terminal, de acordo com o sistema operacional, na execução de cada aba do programa
     {
