@@ -1009,7 +1009,8 @@ void mainMenu() //Função responsável pela exibição do menu principal do pro
             exit(1);
             break;
           case 1:
-            login(&controleLogin);
+            login(&controleLogin, &listuser);
+            clear_terminal();
             itemsMenu(&list);
             break;
           case 2:
