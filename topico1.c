@@ -155,9 +155,7 @@ void printUsers(User *user) //Função para printar a lista completa de usuário
     printf("===========================================================================================\n\t\t\t\t\tREGISTERED USER\n===========================================================================================\n\n");
     while (user!=NULL)
     {
-        int quant = 1;
-        printf("%d. %s\n", quant, user->username); //Estrutura que mostra nome de usuário
-        quant++;
+        printf("%s\n",user->username); //Estrutura que mostra nome de usuário
         user = user->next1; //Percorre a lista
     }
 
