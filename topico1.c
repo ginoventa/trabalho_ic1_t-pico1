@@ -109,7 +109,7 @@ void passFileToListUser(User **listauser, FILE *p1)
 
     if (p1 != NULL)
     {
-        while (fscanf(p1, "49[^;];%49[^;]\n", username, password) == 2)
+        while (fscanf(p1, "%49[^;];%49[^;]\n", username, password) == 2)
         {
             insertUserAtTheEndOfTheList(listauser,username, password);
         }
@@ -132,7 +132,7 @@ void passListToFileUser(User *listauser, FILE *p1)
     {
         while (auxiliar1 != NULL)
         {
-            fprintf(p1, "49[^;];%49[^;]\n", auxiliar1->username, auxiliar1->password);
+            fprintf(p1, "%s;%s\n", auxiliar1->username, auxiliar1->password);
             auxiliar1 = auxiliar1->next1;
         }
         fclose(p1);
@@ -149,7 +149,7 @@ void printUsers(User *user) //Função para printar a lista completa de usuário
 
     if(user == NULL) //Verifica se a lista está vazia
     {
-        printf("\n-> Add an user first!\n");
+        printf("\n-> Add user first!\n");
         return;
     }
     printf("===========================================================================================\n\t\t\t\t\tREGISTERED USER\n===========================================================================================\n\n");
@@ -172,7 +172,6 @@ void printUser(char username[50], char password[50]) //Função para printar os 
 void user_registration(User **listuser) //Função responsável pela exibição e funcionamento da aba de cadastramento do usuário
 {
     clear_terminal();
-    FILE* p1 = fopen("usuarios.txt", "w+");
 
     //Gravando as informações dos usuários
     char username[50];
