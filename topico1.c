@@ -5,9 +5,7 @@
 // =================================================================================================================
 // Definições e variáveis globais
 // =================================================================================================================
-
-
-  //Variável usada no tópico 2, 3 e 4 do trabalho
+//Variável usada no tópico 2, 3 e 4 do trabalho
     int items;
     FILE *itens;
     FILE *usuarios;
@@ -64,7 +62,7 @@ typedef struct _no1//Permite que, ao armazenar os dados de uma mesma entidade, i
 
 //-----------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------
-void insertUserAtTheEndOfTheList(User **listuser, char username[50], char password[50])
+void insertUserAtTheEndOfTheList(User **listuser, char username[50], char password[50]) //insere nome e senha de um usuário no fim da lista em um arquivo
 {
     User *newUser = (User *) malloc(sizeof(User));
     User *aux1;
@@ -73,6 +71,7 @@ void insertUserAtTheEndOfTheList(User **listuser, char username[50], char passwo
     {
         strcpy(newUser->username, username);
         strcpy(newUser->password, password);
+
         newUser->next1 = NULL;
 
         if (*listuser == NULL)
@@ -98,16 +97,16 @@ void insertUserAtTheEndOfTheList(User **listuser, char username[50], char passwo
 //-----------------------------------------------------------------------------------------------------------------
 void passFileToListUser(User **listauser, FILE *p1)
 {
-     char b[50];
-     char c[50];
+     char username[50];
+     char password[50];
 
     p1 = fopen("usuarios.txt", "r");
 
     if (p1 != NULL)
     {
-        while (fscanf(p1, "%49[^;];%49[^;]\n", b, c) == 4)
+        while (fscanf(p1, "49[^;];%49[^;]\n", username, password) == 4)
         {
-            insertUserAtTheEndOfTheList(listauser,b,c );
+            insertUserAtTheEndOfTheList(listauser,username, password);
         }
         fclose(p1);
     }
@@ -128,7 +127,7 @@ void passListToFileUser(User *listauser, FILE *p1)
     {
         while (auxiliar1 != NULL)
         {
-            fprintf(p1, "%s;%s\n", auxiliar1->username, auxiliar1->password);
+            fprintf(p1, "49[^;];%49[^;]\n", auxiliar1->username, auxiliar1->password);
             auxiliar1 = auxiliar1->next1;
         }
         fclose(p1);
@@ -140,7 +139,7 @@ void passListToFileUser(User *listauser, FILE *p1)
 }
 //-----------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------
-void printUsers(User *user) //Função para printar a lista completa de itens
+void printUsers(User *user) //Função para printar a lista completa de usuários
 {
     int quantidade = 1; //Indica o número de usuários listados
 
@@ -152,15 +151,15 @@ void printUsers(User *user) //Função para printar a lista completa de itens
     printf("===========================================================================================\n\t\t\t\t\tREGISTERED USER\n===========================================================================================\n\n");
     while (user!=NULL)
     {
-        printf("%d. %s\n",quantidade, user->username); //Estrutura que mostra: número, código, nome, preço e disponibilidade dos item.
-
+        printf("%d. %s\n",quantidade, user->username); //Estrutura que mostra nome de usuário
+        quantidade++;
         user = user->next1; //Percorre a lista
     }
 
 }
 //-----------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------
-void printUser(char username[50], char password[50]) //Função para printar os dados individuais de cada item
+void printUser(char username[50], char password[50]) //Função para printar os dados individuais de cada usuário
 {
     printf("\t-> Username: %s\n",username);
     printf("\t-> Password: %s\n", password);
@@ -305,7 +304,7 @@ void edit_password(User **listuser) // Função responsável pela edição de um
 //-----------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------
 
-void searchUser (User **listuser) //Função responsável pela busca de um item de acordo com código do item
+void searchUser (User **listuser) //Função responsável pela busca de um usuário de acordo com seu nome de conta
 {
     User *aux1;
     bool found = false;
@@ -383,7 +382,7 @@ void removeUser(User **listuser) //Função responsável pela remoção de um it
             printUser(removing1->username, removing1->password);
 
             printf("\nConfirm? (1 = Yes / 0 = No): "); //Pede a confirmação do usuário para remover o item
-            scanf("%hhu", &option);
+            scanf("%hhc", &option);
             if(option==true)
             {
                 free(removing1); //Libera o espaço de memória
