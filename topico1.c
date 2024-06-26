@@ -228,7 +228,7 @@ void login( bool *controleLogin,  User **listUser) //Função responsável pela 
         if(strcmp(aux1->username, username) == 0 && strcmp(aux1->password, password) == 0)
         {
             printf("\n-> Login successful\n");
-            //*controleLogin = true;
+            *controleLogin = true;
             clear_buffer();
             press_to_continue();
             clear_terminal();
@@ -238,7 +238,7 @@ void login( bool *controleLogin,  User **listUser) //Função responsável pela 
     }
 
     printf("\n-> Login failed (incorrect username or password). Try again!\n\n");
-    //*controleLogin = false;
+    *controleLogin = false;
     clear_buffer();
     press_to_continue();
     clear_terminal();
