@@ -5,12 +5,11 @@
 // =================================================================================================================
 // Definições e variáveis globais
 // =================================================================================================================
-//Variável usada no tópico 2, 3 e 4 do trabalho
-
     typedef unsigned char bool; //Definição do tipo de variável booleana
     #define false 0
     #define true !false
 
+//Variável usada no tópico 2, 3 e 4 do trabalho
     int items;
     FILE *itens;
     FILE *usuarios;
@@ -43,7 +42,6 @@
       fclose(p);
 
     }
-
     void CriarArquivo1 (FILE *p1)
     {
       p1 = fopen("usuarios.txt", "a+");
@@ -66,8 +64,10 @@ typedef struct _no1//Permite que, ao armazenar os dados de uma mesma entidade, i
 
 
 //-----------------------------------------------------------------------------------------------------------------
+
+
 //-----------------------------------------------------------------------------------------------------------------
-void insertUserAtTheEndOfTheList(User **listuser, char username[50], char password[50]) //insere nome e senha de um usuário no fim da lista em um arquivo
+void insertUserAtTheEndOfTheList(User **listUser, char username[50], char password[50]) //insere nome e senha de um usuário no fim da lista em um arquivo
 {
     User *newUser = (User *) malloc(sizeof(User));
     User *aux1;
@@ -79,11 +79,11 @@ void insertUserAtTheEndOfTheList(User **listuser, char username[50], char passwo
 
         newUser->next1 = NULL;
 
-        if (*listuser == NULL)
-            *listuser = newUser;
+        if (*listUser == NULL)
+            *listUser = newUser;
         else
         {
-            aux1 = *listuser;
+            aux1 = *listUser;
             while (aux1->next1)
             {
                 aux1 = aux1->next1;
@@ -97,8 +97,8 @@ void insertUserAtTheEndOfTheList(User **listuser, char username[50], char passwo
     }
 }
 //-----------------------------------------------------------------------------------------------------------------
-//-----------------------------------------------------------------------------------------------------------------
-void passFileToListUser(User **listauser, FILE *p1)
+
+void passFileToListUser(User **listaUser, FILE *p1)
 {
     char username[50];
     char password[50];
@@ -109,7 +109,7 @@ void passFileToListUser(User **listauser, FILE *p1)
     {
         while (fscanf(p1, "%49[^;];%s\n", username, password) == 2)
         {
-            insertUserAtTheEndOfTheList(listauser, username, password);
+            insertUserAtTheEndOfTheList(listaUser, username, password);
         }
         fclose(p1);
     }
@@ -121,9 +121,9 @@ void passFileToListUser(User **listauser, FILE *p1)
 }
 //-----------------------------------------------------------------------------------------------------------------
 //função responsável por passar o que está na lista encadeada diretamente pro file
-void passListToFileUser(User *listauser, FILE *p1)
+void passListToFileUser(User *listaUser, FILE *p1)
 {
-    User *auxiliar1 = listauser;
+    User *auxiliar1 = listaUser;
     p1 = fopen("usuarios.txt", "w+");
 
     if (p1 != NULL)
@@ -142,7 +142,6 @@ void passListToFileUser(User *listauser, FILE *p1)
     }
 }
 //-----------------------------------------------------------------------------------------------------------------
-//-----------------------------------------------------------------------------------------------------------------
 void printUsers(User *user) //Função para printar a lista completa de usuários
 {
 
@@ -160,6 +159,8 @@ void printUsers(User *user) //Função para printar a lista completa de usuário
 
 }
 //-----------------------------------------------------------------------------------------------------------------
+
+
 //-----------------------------------------------------------------------------------------------------------------
 void printUser(char username[50], char password[50]) //Função para printar os dados individuais de cada usuário
 {
@@ -168,8 +169,11 @@ void printUser(char username[50], char password[50]) //Função para printar os 
 
 }
 //-----------------------------------------------------------------------------------------------------------------
+
+
 //-----------------------------------------------------------------------------------------------------------------
-void user_registration(User *listuser) //Função responsável pela exibição e funcionamento da aba de cadastramento do usuário
+
+void user_registration(User *listUser) //Função responsável pela exibição e funcionamento da aba de cadastramento do usuário
 {
     //Gravando as informações dos usuários
     char username[50];
@@ -189,22 +193,24 @@ void user_registration(User *listuser) //Função responsável pela exibição e
     getchar();
 
 
-    insertUserAtTheEndOfTheList(&listuser, username, password); //Adicionar o item na lista
+    insertUserAtTheEndOfTheList(&listUser, username, password); //Adicionar o item na lista
     printf("\n-> The user was successfully registered!\n");
-    passListToFileUser(listuser, usuarios);
+    passListToFileUser(listUser, usuarios);
     clear_buffer();
     press_to_continue();
     clear_terminal();
 }
 //----------------------------------------------------------------------------------------------------------------
-//-----------------------------------------------------------------------------------------------------------------
-void login(bool *controleLogin,  User **listuser) //Função responsável pela exibição e funcionamento da aba de login
+
+
+//----------------------------------------------------------------------------------------------------------------
+void login( bool *controleLogin,  User **listUser) //Função responsável pela exibição e funcionamento da aba de login
 {
     clear_terminal();
 
     User *aux1;
 
-    aux1 = *listuser;
+    aux1 = *listUser;
 
     char username[50];
     char password[50];
@@ -237,15 +243,18 @@ void login(bool *controleLogin,  User **listuser) //Função responsável pela e
     press_to_continue();
     clear_terminal();
 
+
+
 }
 //-----------------------------------------------------------------------------------------------------------------
-//-----------------------------------------------------------------------------------------------------------------
 
-void edit_password(User **listuser) // Função responsável pela edição de uma senha de usuário
+
+//-----------------------------------------------------------------------------------------------------------------
+void edit_password(User **listUser) // Função responsável pela edição de uma senha de usuário
 {
     char username[50];
 
-    if (*listuser == NULL) //Verifica se a lista está vazia
+    if (*listUser == NULL) //Verifica se a lista está vazia
     {
         printf("-> Add a user first!\n");
         return;
@@ -255,7 +264,7 @@ void edit_password(User **listuser) // Função responsável pela edição de um
     printf("Username: "); //Escaneia o código do item a ser editado de acordo com a inserção do usuário
     scanf("%s", username);
 
-    User *aux1 = *listuser;
+    User *aux1 = *listUser;
     bool found = false;
 
     while (aux1 != NULL) //Procura pelo código informado pelo usuário até que chegue ao final da lista
@@ -289,18 +298,19 @@ void edit_password(User **listuser) // Função responsável pela edição de um
 }
 
 //-----------------------------------------------------------------------------------------------------------------
-//-----------------------------------------------------------------------------------------------------------------
 
-void searchUser (User **listuser) //Função responsável pela busca de um usuário de acordo com seu nome de conta
+
+//-----------------------------------------------------------------------------------------------------------------
+void searchUser (User **listUser) //Função responsável pela busca de um usuário de acordo com seu nome de conta
 {
     User *aux1;
     bool found = false;
 
-    aux1 = *listuser;
+    aux1 = *listUser;
 
     char username[50];
 
-    if (*listuser == NULL) //Verifica se a lista está vazia
+    if (*listUser == NULL) //Verifica se a lista está vazia
     {
         printf("-> Add an user first!\n");
         return;
@@ -332,9 +342,10 @@ void searchUser (User **listuser) //Função responsável pela busca de um usuá
 
 }
 //----------------------------------------------------------------------------------------------------------------
-//----------------------------------------------------------------------------------------------------------------
 
-void removeUser(User **listuser) //Função responsável pela remoção de um item da lista
+
+//----------------------------------------------------------------------------------------------------------------
+void removeUser(User **listUser) //Função responsável pela remoção de um item da lista
 {
     User *removing1 = NULL;
     User *aux1;
@@ -344,7 +355,7 @@ void removeUser(User **listuser) //Função responsável pela remoção de um it
 
     char username[50];
 
-    if (*listuser == NULL) //Verifica se a lista está vazia
+    if (*listUser == NULL) //Verifica se a lista está vazia
     {
         printf("-> Add an user first!\n");
         return;
@@ -355,15 +366,15 @@ void removeUser(User **listuser) //Função responsável pela remoção de um it
     scanf("%s", username); //Escaneia o código do item a ser removido de acordo com a inserção do usuário
     printf("\n");
 
-    if(*listuser!=NULL)
+    if(*listUser!=NULL)
     {
         //Remoção do primeiro nó da lista
-        if(strcmp((*listuser)->username, username)==0) //Se o código do primeiro item for igual ao inserido pelo usuário, remove-se o primeiro item
+        if(strcmp((*listUser)->username, username)==0) //Se o código do primeiro item for igual ao inserido pelo usuário, remove-se o primeiro item
         {
             found=true;
 
-            removing1 = *listuser; //Conteúdo a ser removido
-            *listuser = removing1->next1; //O primeiro nó da lista passa a ser o próximo depois de remover
+            removing1 = *listUser; //Conteúdo a ser removido
+            *listUser = removing1->next1; //O primeiro nó da lista passa a ser o próximo depois de remover
 
             printf("Profile that will be removed: \n"); //Printa os dados do item que será removido
             printUser(removing1->username, removing1->password);
@@ -380,15 +391,15 @@ void removeUser(User **listuser) //Função responsável pela remoção de um it
             {
                 printf("\n-> Operation cancelled!\n");
                 //Retaura a lista se a operação for cancelada
-                removing1->next1 = *listuser;
-                *listuser = removing1;
+                removing1->next1 = *listUser;
+                *listUser = removing1;
                 getchar();
             }
 
         }
         else //Se não for o primeiro nó a ser removido, temos que percorrer a lista
         {
-            aux1 = *listuser;
+            aux1 = *listUser;
             while (aux1->next1!=NULL && aux1->next1->username!=username)
             {
                 aux1 = aux1->next1; //Percorre a lista
@@ -429,6 +440,7 @@ void removeUser(User **listuser) //Função responsável pela remoção de um it
         return;
     }
 }
+
 
 // =================================================================================================================
 // Itens
@@ -857,7 +869,7 @@ void removeItem(Item **list) //Função responsável pela remoção de um item d
 // MENUs
 // =================================================================================================================
 
-void userMenu(User **listuser)//Função de menu para edição, inclui: edição de nome de usuário, deleção, edição de senha e listagem de todos os usuários cadastrados
+void userMenu(User **listUser)//Função de menu para edição, inclui: edição de nome de usuário, deleção, edição de senha e listagem de todos os usuários cadastrados
 {
     int option;
     do
@@ -880,25 +892,25 @@ void userMenu(User **listuser)//Função de menu para edição, inclui: edição
             break;
           case 1:
             clear_terminal();
-            edit_password(listuser);
+            edit_password(listUser);
             press_to_continue();
             // clear_terminal();
             break;
           case 2:
             clear_terminal();
-            removeUser(listuser);
+            removeUser(listUser);
             press_to_continue();
             // clear_terminal();
             break;
           case 3:
             clear_terminal();
-            printUsers(*listuser);
+            printUsers(*listUser);
             press_to_continue();
             // clear_terminal();
             break;
           case 4:
             clear_terminal();
-            searchUser(listuser);
+            searchUser(listUser);
             press_to_continue();
             // clear_terminal();
             break;
@@ -970,6 +982,9 @@ void itemsMenu(Item **list) //Função responsável pela exibição do menu de c
         }
   } while (option!=0);
 }
+
+
+
 //----------------------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------------
 
@@ -979,8 +994,8 @@ void mainMenu() //Função responsável pela exibição do menu principal do pro
     int option;
     Item *list = NULL;
     passFileToList(&list, itens);
-    User *listuser;
-    passFileToListUser(&listuser,usuarios);
+    User *listUser = NULL;
+    passFileToListUser(&listUser,usuarios);
     do //Ocorre a repetição do menu até que opção para fechar o programa seja ativada
     {
         clear_terminal();
@@ -1001,15 +1016,16 @@ void mainMenu() //Função responsável pela exibição do menu principal do pro
             exit(1);
             break;
           case 1:
-            login(&controleLogin, &listuser);
+            login(&controleLogin, &listUser);
             clear_terminal();
             itemsMenu(&list);
             break;
           case 2:
-            user_registration(listuser);
+            passFileToListUser(&listUser, usuarios);
+            user_registration(listUser);
             break;
           case 3:
-            userMenu(&listuser);
+            userMenu(&listUser);
             break;
           case 4:
             if(controleLogin == true)
