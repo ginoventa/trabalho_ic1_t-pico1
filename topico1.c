@@ -60,7 +60,6 @@ typedef struct _no1//Permite que, ao armazenar os dados de uma mesma entidade, i
     {
         char username [50];
         char password [50];
-        int quant;
         struct _no1 *next1; //Cada item tem um ponteiro apontando para o item seguinte
     }User;
 
@@ -205,8 +204,7 @@ void login(bool *controleLogin, User **listuser) //Função responsável pela ex
 {
     clear_terminal();
     User *aux1;
-    bool found = false;
-
+    
     aux1 = *listuser;
 
     char username[50];
