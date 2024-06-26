@@ -348,97 +348,61 @@ void searchUser (User **listUser) //Função responsável pela busca de um usuá
 void removeUser(User **listUser) //Função responsável pela remoção de um item da lista
 {
     User *removing1 = NULL;
-    User *aux1;
+    User *aux1 = *listUser;
+    User *prev1 = NULL;
 
     bool option;
     bool found = false;
 
     char username[50];
 
-    if (*listUser == NULL) //Verifica se a lista está vazia
+    if (*listUser == NULL)
     {
-        printf("-> Add an user first!\n");
+        printf("-> Add a user first!\n");
         return;
     }
 
     printf("===========================================================================================\n\t\t\t\t\tREMOVE PROFILE\n===========================================================================================\n\n");
     printf("Username: ");
-    scanf("%s", username); //Escaneia o código do item a ser removido de acordo com a inserção do usuário
+    scanf("%s", username);
     printf("\n");
 
-    if(*listUser!=NULL)
+    while (aux1 != NULL)
     {
-        //Remoção do primeiro nó da lista
-        if(strcmp((*listUser)->username, username)==0) //Se o código do primeiro item for igual ao inserido pelo usuário, remove-se o primeiro item
+        if (strcmp(aux1->username, username) == 0)
         {
-            found=true;
+            found = true;
 
-            removing1 = *listUser; //Conteúdo a ser removido
-            *listUser = removing1->next1; //O primeiro nó da lista passa a ser o próximo depois de remover
+            printf("Profile that will be removed:\n");
+            printUser(aux1->username, aux1->password);
 
-            printf("Profile that will be removed: \n"); //Printa os dados do item que será removido
-            printUser(removing1->username, removing1->password);
-
-            printf("\nConfirm? (1 = Yes / 0 = No): "); //Pede a confirmação do usuário para remover o item
+            printf("\nConfirm? (1 = Yes / 0 = No): ");
             scanf("%hhd", &option);
-            if(option==true)
+            if (option == true)
             {
-                free(removing1); //Libera o espaço de memória
+                if (prev1 == NULL) // Removing the first node
+                    *listUser = aux1->next1;
+                else
+                    prev1->next1 = aux1->next1;
+
+                free(aux1);
                 printf("\n-> Profile removed successfully!\n");
-                getchar();
             }
             else
             {
                 printf("\n-> Operation cancelled!\n");
-                //Retaura a lista se a operação for cancelada
-                removing1->next1 = *listUser;
-                *listUser = removing1;
-                getchar();
             }
-
+            break;
         }
-        else //Se não for o primeiro nó a ser removido, temos que percorrer a lista
-        {
-            aux1 = *listUser;
-            while (aux1->next1!=NULL && aux1->next1->username!=username)
-            {
-                aux1 = aux1->next1; //Percorre a lista
-            }
-            if((aux1->next1)!=NULL)
-            {
-                found = true;
-
-                removing1 = aux1->next1; //O proximo item tem codigo igual ao requerido pelo usuário, cria um ponteiro para o nó que se quer remover
-                aux1->next1 = removing1->next1; //Ponteiro que aponta para o proximo depois de aux->next, mantém a lista ligada
-
-                printf("Profile that will be removed: ");
-                printUser(removing1->username, removing1->password); //Printa os dados do item que será removido
-
-                printf("\nConfirm? (1 = Yes / 0 = No): "); //Pede a confirmação do usuário para remover o item
-                scanf("%hhd", &option);
-                if(option==true)
-                {
-                    free(removing1); //Libera o espaço de memória
-                    printf("\n-> Profile removed successfully!\n");
-                    getchar();
-                }
-                else
-                {
-                    printf("\n-> Operation cancelled!");
-                    //Restaura a lista se a operação for cancelada
-                    aux1->next1 = removing1;
-                    getchar();
-                }
-            }
-        }
-        //passListToFileUser(*listuser,usuarios);
+        prev1 = aux1;
+        aux1 = aux1->next1;
     }
-    if (!found) //Verificação se existe um item com esse código
+
+    if (!found)
     {
         printf("-> %s not found.\n", username);
-        getchar();
-        return;
     }
+    getchar();
 }
 
 
